@@ -1,0 +1,20 @@
+#JUCE generated content
+Builds
+BinaryData.h
+BinaryData*.cpp
+
+#Windows Temp Cache Files
+[Tt]humbs.db
+
+#macOS Finder and whatnot
+.DS_Store
+*.DS_Store
+*.swp
+*~
+
+#Extra folders
+.vscode/
+.ipynb_checkpoints
+__pycache__
+*.asd
+*.mp4
