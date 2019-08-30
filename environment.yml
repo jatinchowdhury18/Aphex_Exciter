@@ -1,0 +1,8 @@
+name: aphex-environment
+channels:
+  - conda-forge
+dependencies:
+  - numpy
+  - scipy
+  - matplotlib
+  
