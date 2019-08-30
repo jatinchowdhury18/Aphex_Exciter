@@ -11,6 +11,8 @@ Simulations are done in `Jupyter Notebook`. Simulation code for various
 sections of the circuit can be found in the 
 [Simulations]([./Simulations](https://github.com/jatinchowdhury18/Aphex_Exciter/tree/master/Simulations)) folder.
 
+For an in-depth discussion of the Tone circuit, see [![NBViewer](https://github.com/jupyter/design/blob/master/logos/Badges/nbviewer_badge.svg)](https://nbviewer.jupyter.org/github/jatinchowdhury18/Aphex_Exciter/blob/master/Simulations/Filter.ipynb)
+
 # Implementation
 Implementation is being done using [JUCE](https://github.com/WeAreROLI/JUCE).
 Individual circuit components are each being made as a separate JUCE project,
