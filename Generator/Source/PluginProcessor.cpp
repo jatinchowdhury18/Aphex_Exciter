@@ -96,16 +96,16 @@ void GeneratorAudioProcessor::changeProgramName (int index, const String& newNam
 void GeneratorAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     for (int ch = 0; ch < getTotalNumOutputChannels(); ++ch)
-    {
-        rect1[ch].prepare ((float) sampleRate);
-        rect2[ch].prepare ((float) sampleRate);
-    }
+        limiterDriver[ch].reset (osMult * (float) sampleRate);
+
+    controlBuffer.setSize (2, osMult * samplesPerBlock);
+
+    oversampling.initProcessing (samplesPerBlock);
 }
 
 void GeneratorAudioProcessor::releaseResources()
 {
-    // When playback stops, you can use this as an opportunity to free up any
-    // spare memory, etc.
+    oversampling.reset();
 }
 
 #ifndef JucePlugin_PreferredChannelConfigurations
@@ -135,29 +135,40 @@ bool GeneratorAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts
 void GeneratorAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiMessages)
 {
     ScopedNoDenormals noDenormals;
+    auto numSamples = buffer.getNumSamples();
 
-    float v_c = 0.0f;
-    for (int ch = 0; ch < buffer.getNumChannels(); ++ch)
+    dsp::AudioBlock<float> block (buffer);
+    dsp::AudioBlock<float> osBlock = oversampling.processSamplesUp (block);
+    
+    float* ptrArray[] = {osBlock.getChannelPointer (0), osBlock.getChannelPointer (1)};
+    AudioBuffer<float> osBuffer (ptrArray, 2, static_cast<int> (osBlock.getNumSamples()));
+
+    controlBuffer.clear();
+    for (int ch = 0; ch < osBuffer.getNumChannels(); ++ch)
+        controlBuffer.copyFrom (ch, 0, osBuffer, ch, 0, osBuffer.getNumSamples());
+
+    for (int ch = 0; ch < osBuffer.getNumChannels(); ++ch)
     {
-        auto x = buffer.getWritePointer (ch);
-
-        for (int n = 0; n < buffer.getNumSamples(); ++n)
-        {
-            v_c = rect1[ch].process (x[n]);
-            x[n] = rect2[ch].process (x[n], x[n]);
-        }
+        auto x = controlBuffer.getWritePointer (ch);
+        rect[ch].process (x, osBuffer.getNumSamples());
+        limiterDriver[ch].process (x, osBuffer.getNumSamples());
+        generator[ch].process (osBuffer.getWritePointer (ch), x, osBuffer.getNumSamples());
     }
+
+    oversampling.processSamplesDown (block);
+
+    buffer.applyGain (Decibels::decibelsToGain (-10.0f));
 }
 
 //==============================================================================
 bool GeneratorAudioProcessor::hasEditor() const
 {
-    return true; // (change this to false if you choose to not supply an editor)
+    return false; // true; // (change this to false if you choose to not supply an editor)
 }
 
 AudioProcessorEditor* GeneratorAudioProcessor::createEditor()
 {
-    return new GeneratorAudioProcessorEditor (*this);
+    return nullptr; // new GeneratorAudioProcessorEditor (*this);
 }
 
 //==============================================================================

@@ -11,8 +11,9 @@
 #pragma once
 
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "RectifierPart1.h"
-#include "RectifierPart2.h"
+#include "Rectifier.h"
+#include "LimiterDriver.h"
+#include "Generator.h"
 
 //==============================================================================
 /**
@@ -58,8 +59,14 @@ public:
     void setStateInformation (const void* data, int sizeInBytes) override;
 
 private:
-    RectifierPart1 rect1[2];
-    RectifierPart2 rect2[2];
+    AudioBuffer<float> controlBuffer;
+
+    Rectifier rect[2];
+    LimiterDriver limiterDriver[2];
+    Generator generator[2];
+
+    dsp::Oversampling<float> oversampling = dsp::Oversampling<float> (2, 2, dsp::Oversampling<float>::filterHalfBandPolyphaseIIR);
+    const int osMult = 4;
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (GeneratorAudioProcessor)

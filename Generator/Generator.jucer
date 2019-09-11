@@ -4,10 +4,11 @@
               pluginFormats="buildAU,buildStandalone,buildVST,buildVST3" cppLanguageStandard="17">
   <MAINGROUP id="sy8CRt" name="Generator">
     <GROUP id="{52DDF8A7-B97D-6164-9418-417C610C0AA1}" name="Source">
-      <FILE id="ZEG5Rq" name="RectifierPart2.h" compile="0" resource="0"
-            file="Source/RectifierPart2.h"/>
-      <FILE id="ic2WM8" name="RectifierPart1.h" compile="0" resource="0"
-            file="Source/RectifierPart1.h"/>
+      <FILE id="c1KcAJ" name="DCBlocker.h" compile="0" resource="0" file="Source/DCBlocker.h"/>
+      <FILE id="Jx5JcB" name="Generator.h" compile="0" resource="0" file="Source/Generator.h"/>
+      <FILE id="p5EAKd" name="OnePole.h" compile="0" resource="0" file="Source/OnePole.h"/>
+      <FILE id="fuq7e4" name="Rectifier.h" compile="0" resource="0" file="Source/Rectifier.h"/>
+      <FILE id="UhizHY" name="LimiterDriver.h" compile="0" resource="0" file="Source/LimiterDriver.h"/>
       <FILE id="a8CvOL" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>
       <FILE id="tYmKxz" name="PluginProcessor.h" compile="0" resource="0"
