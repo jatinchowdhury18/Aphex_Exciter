@@ -100,8 +100,8 @@ void FilterAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock
     filter[0].setTone (*tone);
     filter[1].setTone (*tone);
 
-    filter[0].reset ((float) sampleRate);
-    filter[1].reset ((float) sampleRate);
+    filter[0].reset (4.0f * (float) sampleRate);
+    filter[1].reset (4.0f * (float) sampleRate);
 
     oversampling.initProcessing (samplesPerBlock);
 }
@@ -167,12 +167,12 @@ void FilterAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer&
 //==============================================================================
 bool FilterAudioProcessor::hasEditor() const
 {
-    return true; // (change this to false if you choose to not supply an editor)
+    return false; // true; // (change this to false if you choose to not supply an editor)
 }
 
 AudioProcessorEditor* FilterAudioProcessor::createEditor()
 {
-    return new FilterAudioProcessorEditor (*this);
+    return nullptr; // new FilterAudioProcessorEditor (*this);
 }
 
 //==============================================================================

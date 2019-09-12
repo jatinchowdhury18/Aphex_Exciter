@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="dtiZQF" name="Filter" projectType="audioplug" jucerVersion="5.4.3"
+<JUCERPROJECT id="dtiZQF" name="Filter" projectType="audioplug" jucerVersion="5.4.4"
               pluginFormats="buildAU,buildStandalone,buildVST,buildVST3" cppLanguageStandard="17">
   <MAINGROUP id="LAO61V" name="Filter">
     <GROUP id="{5AD52B00-A90E-9EA9-6C88-0DA8D32AC0C2}" name="Source">

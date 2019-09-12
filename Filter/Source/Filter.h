@@ -38,7 +38,7 @@ public:
 
     void reset (float sampleRate)
     {
-        fs - sampleRate;
+        fs = sampleRate;
 
         tone.setCurrentAndTargetValue (tone.getCurrentValue());
         updateTone (tone.getCurrentValue());
