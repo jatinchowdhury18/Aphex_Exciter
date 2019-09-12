@@ -161,7 +161,7 @@ void FilterAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer&
     oversampling.processSamplesDown (block);
 
     buffer.applyGain (1.0f / 18.0f);
-    buffer.applyGain (Decibels::decibelsToGain (17.0f));
+    buffer.applyGain (Decibels::decibelsToGain (-7.0f));
 }
 
 //==============================================================================

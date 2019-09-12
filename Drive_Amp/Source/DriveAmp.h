@@ -70,15 +70,15 @@ public:
 
     inline float clip (float x)
     {
-        x /= 18.0f;
+        x /= 54.0f;
         if (x <= -1.0f)
-            x = -18.0f;
+            x = -54.0f;
         else if (x >= 1.0f)
-            x = 18.0f;
+            x = 54.0f;
         else
         {
             x -= x*x*x / 3.0f;
-            x *= 27.0f; // 18 * (3/2)
+            x *= 81.0f; // 54 * (3/2)
         }
         return x;
     }

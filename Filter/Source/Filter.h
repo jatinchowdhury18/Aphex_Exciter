@@ -26,7 +26,7 @@ public:
 
     void updateTone (float value)
     {
-        R_p = powf (50000.0f, 1.0f - value);
+        R_p = powf (50000.0f, value);
         calcCoefs();
     }
 
@@ -47,7 +47,25 @@ public:
         calcCoefs();
     }
 
-    void calcCoefs()
+    inline void calcCoefsLPF (float fc, float Q)
+    {
+        // Calculate filter coefficients using bilinear transform, warping
+        // so that the cutoff frequency is correct
+        // (see https://ccrma.stanford.edu/~jos/filters/Digitizing_Analog_Filters_Bilinear.html)
+        float wc = MathConstants<float>::twoPi * fc / fs;
+        float c = 1.0f / dsp::FastMathApproximations::tan (wc / 2.0f);
+        float phi = c * c;
+        float K = c / Q;
+        float a0 = phi + K + 1.0f;
+
+        b[0] = 1 / a0;
+        b[1] = 2.0f * b[0];
+        b[2] = b[0];
+        a[1] = 2.0f * (1.0f - phi) / a0;
+        a[2] = (phi - K + 1.0f) / a0;
+    }
+
+    inline void calcCoefs()
     {
         float R_1_now = R_1 + error * R_1_rand;
         float R_2_now = R_2 + error * R_2_rand;
@@ -58,28 +76,11 @@ public:
 
         float R_1p = R_1_now + R_p;
 
-        float a2 = R_1p * R_1p * C_1_now * C_1_now * R_2_now * C_3_now;
-        float a1 = 4.0f * R_1p * C_1_now * R_2_now * (R_3_now * C_2_now + 2.0f * C_3_now);
-        float a0 = 4.0f * R_1p * C_1_now * R_3_now;
-
-        float b2 = 0;
-        float b1 = 0;
-        float b0 = R_2_now * C_3_now;
-
-        // find freq to match with bilinear transform
-        float T = 1.0f / fs;
-        float wc = sqrtf (abs (a1*a1 - 4.0f*a0*a2)) / (2.0f * a2);
-        float c = wc / dsp::FastMathApproximations::tan (wc * T / 2.0f); // (2.0f * fs);
-        float c_2 = c*c;
-
-        // bilinear
-        a[0] = a2 * c_2 + a1 * c + a0;
-        a[1] = 2.0f * (a0 - a2 * c_2) / a[0];
-        a[2] = (a2 * c_2 - a1 * c + a0) / a[0];
-
-        b[0] = (b2 * c_2 + b1 * c + b0) / a[0];
-        b[1] = 2.0f * (b0 - b2 * c_2) / a[0];
-        b[2] = (b2 * c_2 - b1 * c + b0) / a[0];
+        float fc = 1.0f / (MathConstants<float>::twoPi * R_1p * C_1_now);
+        float G = (1.0f + R_3_now) / R_3_now;
+        float Q = 1.0f / (3.0f - G);
+        
+        calcCoefsLPF (jmin (fc, fs / 2.0f - 100.0f), Q);
     }
 
     inline void process (float* buffer, int numSamples) override
@@ -105,12 +106,12 @@ public:
 private:
     float getTolerance (float value)
     {
-        return (Random::getSystemRandom().nextFloat() - 0.5f) * (value * 0.5f); // +/- 25%
+        return (Random::getSystemRandom().nextFloat() - 0.5f) * (value * 1.0f); // +/- 50%
     }
 
-    const float R_1 = 10000;
+    const float R_1 = 150; // 10000;
     const float R_2 = 2400;
-    const float R_3 = 1000;
+    const float R_3 = 1100;
     const float C_1 = (float) 4.7e-9;
     const float C_2 = (float) 56.0e-12;
     const float C_3 = (float) 4.7e-6;

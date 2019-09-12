@@ -160,7 +160,7 @@ void Drive_ampAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuff
 
     oversampling.processSamplesDown (block);
 
-    buffer.applyGain (1.0f / 18.0f);
+    buffer.applyGain (1.0f / 54.0f);
 }
 
 //==============================================================================
