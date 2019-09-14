@@ -26,7 +26,7 @@ public:
 
     void updateTone (float value)
     {
-        R_p = powf (50000.0f, value);
+        R_p = 500.0f * powf (50000.0f / 500.0f, sqrtf (value));
         calcCoefs();
     }
 
@@ -47,7 +47,7 @@ public:
         calcCoefs();
     }
 
-    inline void calcCoefsLPF (float fc, float Q)
+    inline void calcCoefsHPF (float fc, float Q)
     {
         // Calculate filter coefficients using bilinear transform, warping
         // so that the cutoff frequency is correct
@@ -58,8 +58,8 @@ public:
         float K = c / Q;
         float a0 = phi + K + 1.0f;
 
-        b[0] = 1 / a0;
-        b[1] = 2.0f * b[0];
+        b[0] = phi / a0;
+        b[1] = -2.0f * b[0];
         b[2] = b[0];
         a[1] = 2.0f * (1.0f - phi) / a0;
         a[2] = (phi - K + 1.0f) / a0;
@@ -76,11 +76,16 @@ public:
 
         float R_1p = R_1_now + R_p;
 
-        float fc = 1.0f / (MathConstants<float>::twoPi * R_1p * C_1_now);
-        float G = (1.0f + R_3_now) / R_3_now;
+        float wc = 1.0f / (R_1p * C_1_now);
+        float fc = wc / MathConstants<float>::twoPi;
+
+        float z_2 = R_2_now / sqrtf ((wc*R_2_now*C_2_now)*(wc*R_2_now*C_2_now) + 1.0f);
+        float z_3 = sqrtf ((wc*R_3_now*C_3_now)*(wc*R_3_now*C_3_now) + 1.0f);
+
+        float G = z_3 / (z_2 + z_3);
         float Q = 1.0f / (3.0f - G);
-        
-        calcCoefsLPF (jmin (fc, fs / 2.0f - 100.0f), Q);
+
+        calcCoefsHPF (jmin (fc, fs / 2.0f - 50.0f), jmax (Q, 0.01f));
     }
 
     inline void process (float* buffer, int numSamples) override
@@ -109,9 +114,9 @@ private:
         return (Random::getSystemRandom().nextFloat() - 0.5f) * (value * 1.0f); // +/- 50%
     }
 
-    const float R_1 = 150; // 10000;
+    const float R_1 = 10000;
     const float R_2 = 2400;
-    const float R_3 = 1100;
+    const float R_3 = 1000;
     const float C_1 = (float) 4.7e-9;
     const float C_2 = (float) 56.0e-12;
     const float C_3 = (float) 4.7e-6;
