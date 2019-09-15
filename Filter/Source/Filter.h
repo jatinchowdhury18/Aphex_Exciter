@@ -26,7 +26,7 @@ public:
 
     void updateTone (float value)
     {
-        R_p = 500.0f * powf (50000.0f / 500.0f, sqrtf (value));
+        R_p = 100.0f * powf (50000.0f / 100.0f, value);
         calcCoefs();
     }
 
