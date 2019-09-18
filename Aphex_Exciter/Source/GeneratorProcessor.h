@@ -23,6 +23,8 @@ private:
     LimiterDriver limiterDriver[2];
     Generator generator[2];
 
+    dsp::Oversampling<float> oversampling = dsp::Oversampling<float> (2, 1, dsp::Oversampling<float>::FilterType::filterHalfBandPolyphaseIIR);
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (GeneratorProcessor)
 };
 

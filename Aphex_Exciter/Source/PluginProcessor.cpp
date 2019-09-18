@@ -139,6 +139,8 @@ void Aphex_exciterAudioProcessor::prepareToPlay (double sampleRate, int samplesP
 
 void Aphex_exciterAudioProcessor::releaseResources()
 {
+    generatorProcessor.releaseResources();
+
     oversampling.reset();
 }
 

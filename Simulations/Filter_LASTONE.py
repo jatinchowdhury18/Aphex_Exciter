@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 
 #%%
-a = 15 # R_1p
+a = 10000 # R_1p
 b = 2400
 c = 1100
 d = 4.7e-9
