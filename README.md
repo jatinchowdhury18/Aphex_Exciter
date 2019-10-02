@@ -16,7 +16,6 @@ For an in-depth discussion of the Tone circuit, see [![NBViewer](https://github.
 # Implementation
 Implementation is being done using [JUCE](https://github.com/WeAreROLI/JUCE).
 Individual circuit components are each being made as a separate JUCE project,
-and eventually a full implementation combining all of the subcomponents will
-be made.
+as well as a full implementation combining all of the subcomponents.
 
 Circuit schematic: https://i.imgur.com/PT9lUi6.gif
